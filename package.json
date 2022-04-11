@@ -1,0 +1,23 @@
+{
+  "name": "hello-p5js",
+  "version": "1.0.0",
+  "description": "",
+  "main": "calcX.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/muneue-suwa/hello-p5js.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/muneue-suwa/hello-p5js/issues"
+  },
+  "homepage": "https://github.com/muneue-suwa/hello-p5js#readme",
+  "devDependencies": {
+    "eslint": "^8.13.0",
+    "eslint-config-google": "^0.14.0"
+  }
+}
