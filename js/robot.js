@@ -79,10 +79,6 @@ function draw() {
   dth2 = x.subset(math.index(3, 0));
   // console.log('th1', th1, 'th2', th2);
 
-  if (count % fps == 0) {
-    addData(myChart, count * dt, th1, th2);
-  }
-
   let x1 = 2 * l1 * Math.sin(th1);
   let y1 = 2 * l1 * Math.cos(th1);
 
