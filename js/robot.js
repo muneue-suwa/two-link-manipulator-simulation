@@ -2,6 +2,8 @@
 /* eslint-disable require-jsdoc */
 // const te = 15;
 const dt = 1 / 100;
+const fps = 1 / dt;
+let count = 0;
 // const nt = te / dt + 1;
 
 let th1 = Math.PI / 6;
@@ -32,7 +34,7 @@ const canvasY = 500;
 
 function setup() {
   createCanvas(canvasX, canvasY); // サイズ: 800px × 500px
-  frameRate(1 / dt);
+  frameRate(fps);
 }
 
 function draw() {
@@ -77,6 +79,10 @@ function draw() {
   dth2 = x.subset(math.index(3, 0));
   // console.log('th1', th1, 'th2', th2);
 
+  if (count % fps == 0) {
+    addData(myChart, count * dt, th1, th2);
+  }
+
   let x1 = 2 * l1 * Math.sin(th1);
   let y1 = 2 * l1 * Math.cos(th1);
 
@@ -93,4 +99,6 @@ function draw() {
   line(canvasX/2, canvasY/2, canvasX/2 + x1, canvasY/2 - y1);
   stroke(50, 200, 50);
   line(canvasX/2 + x1, canvasY/2 - y1, canvasX/2 + x2, canvasY/2 -y2);
+
+  count += 1;
 }
