@@ -43,7 +43,7 @@ function draw() {
   const lth2 = dth2;
   const J = math.matrix([
     [J1, beta * math.cos(th2 - th1)],
-    [-beta * math.cos(th1 - th2), J2],
+    [beta * math.cos(th1 - th2), J2],
   ]);
   const vldth = math.multiply(
       math.multiply(-1, math.inv(J)),
