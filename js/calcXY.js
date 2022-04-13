@@ -5,7 +5,6 @@ function calcXY(torqueArray) {
   const te = 15;
   const dt = 1 / 100;
   const nt = te / dt + 1;
-  // const t=linspace(0,te,nt);
 
   let th1 = Math.PI / 2;
   let th2 = Math.PI;
@@ -15,10 +14,7 @@ function calcXY(torqueArray) {
   const m2 = 1;
   const l1 = 0.5;
   const l2 = 0.3;
-  // const x_target=1.2;
-  // const y_target=-0.8;
-  // const x_init=2*l1*math.sin(th1)+2*l2*math.sin(th2);
-  // const y_init=2*l1*math.cos(th1)+2*l2*math.cos(th2);
+
   const D1 = 3;
   const D2 = 3;
 
@@ -33,9 +29,7 @@ function calcXY(torqueArray) {
   const beta = 2 * m2 * l1 * l2;
 
   const x0 = math.matrix([[th1], [th2], [dth1], [dth2]]);
-
   let x = x0;
-  // const recx=new Array(nt);
 
   const xy1 = new Array(nt);
   const x1 = 2 * l1 * math.sin(th1);
@@ -84,11 +78,6 @@ function calcXY(torqueArray) {
             math.matrix([[lth1], [lth2], [ldth1], [ldth2]]), dt,
         ),
     );
-
-    // recx=[recx nx];
-    // if (isNaN(nx.subset(math.index(0, 0)))) {
-    //   break;
-    // }
 
     th1 = nx.subset(math.index(0, 0));
     th2 = nx.subset(math.index(1, 0));
