@@ -1,6 +1,7 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable require-jsdoc */
 const timeDiv = document.getElementById('time');
+const runSimulatorBtn = document.getElementById('run-simulator-btn');
 
 const te = 15;
 const dt = 1 / 100;
@@ -17,12 +18,24 @@ for (let i = 0; i < xyFrame.length; i++) {
   xyFrame[i] = Math.trunc(i / (fps * dt));
 }
 
-// let xy1;
-// let xy2;
-// let doDraw = false;
 const pixelRatio = 300;
 const allowableError = 0.03;
 const targetXY = [1.2, -0.8];
+
+let doDraw = false;
+let startTime;
+let xy1;
+let xy2;
+
+runSimulatorBtn.disabled = true;
+runSimulatorBtn.addEventListener('click', () =>{
+  xy1xy2 = calcXY(torqueArray);
+  xy1 = xy1xy2[0];
+  xy2 = xy1xy2[1];
+  doDraw = true;
+  startTime = Date.now();
+  loop();
+});
 
 function setup() {
   createCanvas(canvasX, canvasY); // サイズ: 800px × 500px
@@ -33,8 +46,11 @@ function setup() {
 }
 
 function draw() {
-  background(256);
+  if (doDraw != true) {
+    return 0;
+  }
 
+  background(256);
   strokeWeight(1);
   stroke(200, 50, 50);
   circle(
@@ -42,11 +58,6 @@ function draw() {
       canvasY / 2 - targetXY[1] * pixelRatio,
       allowableError * pixelRatio * 2,
   );
-
-  if (doDraw != true) {
-    return 0;
-  }
-
   const x1 = pixelRatio * xy1[xyFrame[count]][0];
   const y1 = pixelRatio * xy1[xyFrame[count]][1];
   const x2 = pixelRatio * xy2[xyFrame[count]][0];
