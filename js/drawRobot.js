@@ -17,28 +17,42 @@ for (let i = 0; i < xyFrame.length; i++) {
   xyFrame[i] = Math.trunc(i / (fps * dt));
 }
 
-let xy1;
-let xy2;
+// let xy1;
+// let xy2;
+// let doDraw = false;
+const pixelRatio = 300;
+const allowableError = 0.03;
+const targetXY = [1.2, -0.8];
 
 function setup() {
-  const xy1xy2 = calcXY();
-  xy1 = xy1xy2[0];
-  xy2 = xy1xy2[1];
   createCanvas(canvasX, canvasY); // サイズ: 800px × 500px
   frameRate(fps);
   // console.log(xy1);
-  startTime = Date.now();
   console.log('start: ', new Date());
+  noLoop();
 }
 
 function draw() {
-  background(200);
-  const x1 = 150 * xy1[xyFrame[count]][0];
-  const y1 = 150 * xy1[xyFrame[count]][1];
-  const x2 = 150 * xy2[xyFrame[count]][0];
-  const y2 = 150 * xy2[xyFrame[count]][1];
+  background(256);
 
-  strokeWeight(10); // 線幅を10pxに
+  strokeWeight(1);
+  stroke(200, 50, 50);
+  circle(
+      canvasX / 2 + targetXY[0] * pixelRatio,
+      canvasY / 2 - targetXY[1] * pixelRatio,
+      allowableError * pixelRatio * 2,
+  );
+
+  if (doDraw != true) {
+    return 0;
+  }
+
+  const x1 = pixelRatio * xy1[xyFrame[count]][0];
+  const y1 = pixelRatio * xy1[xyFrame[count]][1];
+  const x2 = pixelRatio * xy2[xyFrame[count]][0];
+  const y2 = pixelRatio * xy2[xyFrame[count]][1];
+
+  strokeWeight(5); // 線幅を10pxに
   stroke(50, 50, 200);
   line(canvasX / 2, canvasY / 2, canvasX / 2 + x1, canvasY / 2 - y1);
   stroke(50, 200, 50);
@@ -47,7 +61,7 @@ function draw() {
   const currentTime = (Date.now() - startTime) / 1000;
   timeDiv.textContent = currentTime;
 
-  if (count == xyFrame.length) {
+  if (count === xyFrame.length) {
     noLoop();
     console.log('end: ', new Date());
     timeDiv.textContent += ' Completed!';

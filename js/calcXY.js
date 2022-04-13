@@ -1,6 +1,7 @@
 /* eslint-disable require-jsdoc */
 /* eslint-disable no-unused-vars */
-function calcXY() {
+function calcXY(torqueArray) {
+  console.log('torqueArray', torqueArray);
   const te = 15;
   const dt = 1 / 100;
   const nt = te / dt + 1;
@@ -55,7 +56,7 @@ function calcXY() {
     const vldth = math.multiply(
         math.inv(J),
         math.add(
-            math.matrix([[tau12], [tau2]]),
+            math.matrix([[torqueArray[k-1][0]], [torqueArray[k-1][1]]]),
             math.multiply(
                 -1,
                 math.matrix([

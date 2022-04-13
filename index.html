@@ -10,14 +10,21 @@
 
 <body>
   <!-- <script src="js/script.js"></script> -->
-  <h1>Time</h1>
+  <h2>1. Upload tau file</h2>
+  <input type="file" accept=".txt, .csv, .js" id="myfile">
+  <div id="log">
+    (ここに読み込んだデータが表示されます)
+  </div>
+
+  <h2>2. Run simulator</h2>
   <div id="time"></div>
 
   <script src="https://cdn.jsdelivr.net/npm/p5@0.10.2/lib/p5.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/10.4.3/math.js"></script>
   <!-- <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> -->
   <!-- <script src="js/plotChart.js"></script> -->
-  <script src="js/tau.js"></script>
+  <!-- <script src="js/tau.js"></script> -->
+  <script src="js/readTextFile.js" defer></script>
   <script src="js/calcXY.js"></script>
   <script src="js/drawRobot.js"></script>
 </body>
