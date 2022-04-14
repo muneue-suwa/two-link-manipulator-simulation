@@ -24,6 +24,11 @@ class Manipulator {
 
     this.D1 = D1;
     this.D2 = D2;
+
+    this.initX1 = 2 * l1 * math.sin(th1);
+    this.initY1 = 2 * l1 * math.cos(th1);
+    this.initX2 = 2 * l1 * math.sin(th1) + 2 * l2 * math.sin(th2);
+    this.initY2 = 2 * l1 * math.cos(th1) + 2 * l2 * math.cos(th2);
   }
 
   calcPositionPerFrame(torqueArray, fps) {
@@ -68,13 +73,13 @@ class Manipulator {
     let x = x0;
 
     const xy1 = new Array(nt);
-    const x1 = 2 * l1 * math.sin(th1);
-    const y1 = 2 * l1 * math.cos(th1);
+    const x1 = this.initX1;
+    const y1 = this.initY1;
     xy1[0] = [x1, y1];
 
     const xy2 = new Array(nt);
-    const x2 = 2 * l1 * math.sin(th1) + 2 * l2 * math.sin(th2);
-    const y2 = 2 * l1 * math.cos(th1) + 2 * l2 * math.cos(th2);
+    const x2 = this.initX2;
+    const y2 = this.initY2;
     xy2[0] = [x2, y2];
 
     for (let k = 1; k < nt; k++) {
