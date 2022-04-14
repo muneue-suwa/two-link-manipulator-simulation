@@ -1,4 +1,12 @@
 {
     "files.insertFinalNewline": true,
-    "files.trimFinalNewlines": true
+    "files.trimFinalNewlines": true,
+    "[html]": {
+        "editor.formatOnSave": true
+    },
+    "[javascript]": {
+        "editor.rulers": [
+            80,
+        ],
+    }
 }
