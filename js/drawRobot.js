@@ -68,6 +68,9 @@ function setup() {
 function draw() {
   const canvasWidth = canvasSize[0];
   const canvasHeight = canvasSize[1];
+  const coordinates = new CoordinatesConverter(
+      canvasWidth / 2, canvasHeight / 2, pixelRatio,
+  );
   if (doDraw != true) {
     return 0;
   }
@@ -75,27 +78,14 @@ function draw() {
   background(240);
   strokeWeight(1);
   stroke(200, 50, 50);
-  circle(
-      canvasWidth / 2 + targetXY[0] * pixelRatio,
-      canvasHeight / 2 - targetXY[1] * pixelRatio,
-      allowableError * pixelRatio * 2,
-  );
-  const x1 = pixelRatio * xy1[count][0];
-  const y1 = pixelRatio * xy1[count][1];
-  const x2 = pixelRatio * xy2[count][0];
-  const y2 = pixelRatio * xy2[count][1];
+  coordinates.circle(targetXY[0], targetXY[1], allowableError * 2);
 
-  strokeWeight(5); // 線幅を10pxに
+  strokeWeight(5);
   stroke(50, 50, 200);
-  line(
-      canvasWidth / 2, canvasHeight / 2,
-      canvasWidth / 2 + x1, canvasHeight / 2 - y1,
-  );
+  coordinates.line(0, 0, xy1[count][0], xy1[count][1]);
   stroke(50, 200, 50);
-  line(
-      canvasWidth / 2 + x1, canvasHeight / 2 - y1,
-      canvasWidth / 2 + x2, canvasHeight / 2 - y2,
-  );
+  coordinates.line(xy1[count][0], xy1[count][1], xy2[count][0], xy2[count][1]);
+
   count += 1;
   const currentTime = (Date.now() - startTime) / 1000;
   simulateTimeDiv.textContent = currentTime;
