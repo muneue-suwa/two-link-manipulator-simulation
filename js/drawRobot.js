@@ -2,6 +2,7 @@
 /* eslint-disable require-jsdoc */
 const simulateTimeDiv = document.getElementById('simulateTime');
 const startSimulatorBtn = document.getElementById('startSimulator');
+const resetSimulatorBtn = document.getElementById('resetSimulator');
 const saveSimulatorBtn = document.getElementById('saveSimulator');
 const simulatorDiv = document.getElementById('simulator');
 
@@ -9,7 +10,7 @@ const te = 15;
 const dt = 1 / 100;
 const nt = te / dt + 1;
 
-let canvasSize = getCanvasSize();
+const canvasSize = getCanvasSize();
 const fps = 60;
 let count = 0;
 
@@ -19,7 +20,7 @@ for (let i = 0; i < xyFrame.length; i++) {
   xyFrame[i] = Math.trunc(i / (fps * dt));
 }
 
-const pixelRatio = 300;
+const pixelRatio = 200;
 const allowableError = 0.03;
 const targetXY = [1.2, -0.8];
 
@@ -29,19 +30,32 @@ let xy1;
 let xy2;
 
 startSimulatorBtn.disabled = true;
-startSimulatorBtn.addEventListener('click', () =>{
+startSimulatorBtn.addEventListener('click', () => {
   xy1xy2 = calcXY(torqueArray);
   xy1 = xy1xy2[0];
   xy2 = xy1xy2[1];
   doDraw = true;
   startTime = Date.now();
+  startSimulatorBtn.disabled = true;
   loop();
 });
+
+resetSimulatorBtn.addEventListener('click', () => {
+  resetSimulation();
+  startSimulatorBtn.disabled = false;
+});
+
+function resetSimulation() {
+  background(240);
+  count = 0;
+  resetSimulatorBtn.checked = false;
+  resetSimulatorBtn.disabled = true;
+}
 
 function setup() {
   const simulationCanvas = createCanvas(canvasSize[0], canvasSize[1]);
   simulationCanvas.parent('simulationCanvas');
-  background(240);
+  resetSimulation();
   frameRate(fps);
   // console.log(xy1);
   console.log('start: ', new Date());
@@ -59,7 +73,7 @@ function draw() {
     return 0;
   }
 
-  background(256);
+  background(240);
   strokeWeight(1);
   stroke(200, 50, 50);
   circle(
@@ -88,20 +102,26 @@ function draw() {
   simulateTimeDiv.textContent = currentTime;
 
   if (count === xyFrame.length) {
+    doDraw = false;
     noLoop();
     console.log('end: ', new Date());
     simulateTimeDiv.textContent += ' Completed!';
+    resetSimulatorBtn.disabled = false;
   }
 }
 
-function windowResized() {
-  canvasSize = getCanvasSize();
-  resizeCanvas(canvasSize[0], canvasSize[1]);
-  background(240);
-}
+// function windowResized() {
+//   canvasSize = getCanvasSize();
+//   resizeCanvas(canvasSize[0], canvasSize[1]);
+//   background(240);
+// }
 
 function getCanvasSize() {
   const canvasWidth = simulatorDiv.clientWidth;
-  const canvasHeight = canvasWidth * 0.8;
+  const simulatorDivTop = simulatorDiv.getBoundingClientRect().top +
+    window.pageYOffset;
+  console.log(simulatorDivTop);
+  const canvasHeight = (window.innerHeight - simulatorDivTop) * 0.9;
+  console.log(canvasHeight);
   return [canvasWidth, canvasHeight];
 }
