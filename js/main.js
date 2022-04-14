@@ -9,10 +9,9 @@ const saveSimulatorBtn = document.getElementById('saveSimulator');
 const simulateTimeDiv = document.getElementById('simulateTime');
 const simulatorDiv = document.getElementById('simulationCanvas');
 
-const canvasSize = getCanvasSize();
+let canvasSize = getCanvasSize();
 const fps = 60;
 
-const pixelRatio = 200;
 const allowableError = 0.03;
 const targetXY = [1.2, -0.8];
 
@@ -22,6 +21,7 @@ let count;
 let xy1;
 let xy2;
 let frameNum;
+let pixelRatio;
 
 let manipulator;
 mode1Btn.addEventListener('click', () => {
@@ -66,6 +66,7 @@ resetSimulatorBtn.addEventListener('click', () => {
 });
 
 function resetSimulation() {
+  canvasSize = getCanvasSize();
   background(240);
   count = 0;
   resetSimulatorBtn.checked = false;
@@ -93,6 +94,8 @@ function draw() {
   );
   if (doDraw != true) {
     return 0;
+  } else if (isNaN(pixelRatio)) {
+    pixelRatio = calcPixelRatio();
   }
 
   background(240);
@@ -121,6 +124,7 @@ function draw() {
 
 // function windowResized() {
 //   canvasSize = getCanvasSize();
+//   pixelRatio = calcPixelRatio();
 //   resizeCanvas(canvasSize[0], canvasSize[1]);
 //   background(240);
 // }
@@ -129,8 +133,14 @@ function getCanvasSize() {
   const canvasWidth = simulatorDiv.clientWidth;
   const canvasTopPixel = simulatorDiv.getBoundingClientRect().top;
   const simulatorDivTop = canvasTopPixel + window.pageYOffset;
-  console.log(simulatorDivTop);
   const canvasHeight = (window.innerHeight - simulatorDivTop) - 10;
-  console.log(canvasHeight);
   return [canvasWidth, canvasHeight];
+}
+
+function calcPixelRatio() {
+  const maxArmLength = (manipulator.l1 + manipulator.l2) * 2;
+  const minWidthOrHeight = Math.min(canvasSize[0], canvasSize[1]);
+  const pixelRatio = minWidthOrHeight / (maxArmLength * 2);
+  // console.log(pixelRatio);
+  return pixelRatio;
 }
