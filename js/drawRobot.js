@@ -1,14 +1,15 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable require-jsdoc */
-const timeDiv = document.getElementById('time');
-const runSimulatorBtn = document.getElementById('run-simulator-btn');
+const simulateTimeDiv = document.getElementById('simulateTime');
+const startSimulatorBtn = document.getElementById('startSimulator');
+const saveSimulatorBtn = document.getElementById('saveSimulator');
+const simulatorDiv = document.getElementById('simulator');
 
 const te = 15;
 const dt = 1 / 100;
 const nt = te / dt + 1;
 
-const canvasX = 800;
-const canvasY = 500;
+let canvasSize = getCanvasSize();
 const fps = 60;
 let count = 0;
 
@@ -27,8 +28,8 @@ let startTime;
 let xy1;
 let xy2;
 
-runSimulatorBtn.disabled = true;
-runSimulatorBtn.addEventListener('click', () =>{
+startSimulatorBtn.disabled = true;
+startSimulatorBtn.addEventListener('click', () =>{
   xy1xy2 = calcXY(torqueArray);
   xy1 = xy1xy2[0];
   xy2 = xy1xy2[1];
@@ -38,14 +39,22 @@ runSimulatorBtn.addEventListener('click', () =>{
 });
 
 function setup() {
-  createCanvas(canvasX, canvasY); // サイズ: 800px × 500px
+  const simulationCanvas = createCanvas(canvasSize[0], canvasSize[1]);
+  simulationCanvas.parent('simulationCanvas');
+  background(240);
   frameRate(fps);
   // console.log(xy1);
   console.log('start: ', new Date());
   noLoop();
+
+  saveSimulatorBtn.addEventListener('click', () => {
+    saveCanvas(simulationCanvas, 'result', 'png');
+  });
 }
 
 function draw() {
+  const canvasWidth = canvasSize[0];
+  const canvasHeight = canvasSize[1];
   if (doDraw != true) {
     return 0;
   }
@@ -54,8 +63,8 @@ function draw() {
   strokeWeight(1);
   stroke(200, 50, 50);
   circle(
-      canvasX / 2 + targetXY[0] * pixelRatio,
-      canvasY / 2 - targetXY[1] * pixelRatio,
+      canvasWidth / 2 + targetXY[0] * pixelRatio,
+      canvasHeight / 2 - targetXY[1] * pixelRatio,
       allowableError * pixelRatio * 2,
   );
   const x1 = pixelRatio * xy1[xyFrame[count]][0];
@@ -65,16 +74,34 @@ function draw() {
 
   strokeWeight(5); // 線幅を10pxに
   stroke(50, 50, 200);
-  line(canvasX / 2, canvasY / 2, canvasX / 2 + x1, canvasY / 2 - y1);
+  line(
+      canvasWidth / 2, canvasHeight / 2,
+      canvasWidth / 2 + x1, canvasHeight / 2 - y1,
+  );
   stroke(50, 200, 50);
-  line(canvasX / 2 + x1, canvasY / 2 - y1, canvasX / 2 + x2, canvasY / 2 - y2);
+  line(
+      canvasWidth / 2 + x1, canvasHeight / 2 - y1,
+      canvasWidth / 2 + x2, canvasHeight / 2 - y2,
+  );
   count += 1;
   const currentTime = (Date.now() - startTime) / 1000;
-  timeDiv.textContent = currentTime;
+  simulateTimeDiv.textContent = currentTime;
 
   if (count === xyFrame.length) {
     noLoop();
     console.log('end: ', new Date());
-    timeDiv.textContent += ' Completed!';
+    simulateTimeDiv.textContent += ' Completed!';
   }
+}
+
+function windowResized() {
+  canvasSize = getCanvasSize();
+  resizeCanvas(canvasSize[0], canvasSize[1]);
+  background(240);
+}
+
+function getCanvasSize() {
+  const canvasWidth = simulatorDiv.clientWidth;
+  const canvasHeight = canvasWidth * 0.8;
+  return [canvasWidth, canvasHeight];
 }

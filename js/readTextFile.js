@@ -1,7 +1,7 @@
-const inputfile = document.getElementById('myfile');
+const torqueFileInput = document.getElementById('torqueFile');
 const torqueArray = [];
 
-inputfile.addEventListener('change', (e) => {
+torqueFileInput.addEventListener('change', (e) => {
   const file = e.target.files;
   file[0].text().then( (text) => {
     const lines = text.split(/\n|\r\n/);
@@ -15,6 +15,6 @@ inputfile.addEventListener('change', (e) => {
       const torque = [parseFloat(torqueStr[0]), parseFloat(torqueStr[1])];
       torqueArray.push(torque);
     }
-    runSimulatorBtn.disabled = false;
+    startSimulatorBtn.disabled = false;
   });
 }, false);
