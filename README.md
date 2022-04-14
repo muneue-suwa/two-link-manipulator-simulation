@@ -2,4 +2,4 @@
 
 2リンクマニピュレータのシミュレーションを行うWebアプリ
 
-URL: <https://muneue-suwa.github.io/hello-p5js/index.html>
+URL: <https://muneue-suwa.github.io/two-link-manipulator-simulation/>

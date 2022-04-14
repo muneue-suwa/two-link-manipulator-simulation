@@ -1,21 +1,21 @@
 {
-  "name": "hello-p5js",
+  "name": "two-link-manipulator-simulation",
   "version": "1.0.0",
-  "description": "",
-  "main": "calcX.js",
+  "description": "Two-Link Manipulator Simulation for Basic Robotics",
+  "main": "js/main.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/muneue-suwa/hello-p5js.git"
+    "url": "git+https://github.com/muneue-suwa/two-link-manipulator-simulation.git"
   },
-  "author": "",
+  "author": "Muneue SUWA",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/muneue-suwa/hello-p5js/issues"
+    "url": "https://github.com/muneue-suwa/two-link-manipulator-simulation/issues"
   },
-  "homepage": "https://github.com/muneue-suwa/hello-p5js#readme",
+  "homepage": "https://github.com/muneue-suwa/two-link-manipulator-simulation#readme",
   "devDependencies": {
     "eslint": "^8.13.0",
     "eslint-config-google": "^0.14.0"
