@@ -2,6 +2,7 @@
 /* eslint-disable require-jsdoc */
 const mode1Btn = document.getElementById('mode1-tab');
 const mode2Btn = document.getElementById('mode2-tab');
+const torqueFileInput = document.getElementById('torqueFile');
 const startSimulatorBtn = document.getElementById('startSimulator');
 const resetSimulatorBtn = document.getElementById('resetSimulator');
 const saveSimulatorBtn = document.getElementById('saveSimulator');
@@ -29,6 +30,25 @@ mode1Btn.addEventListener('click', () => {
 mode2Btn.addEventListener('click', () => {
   manipulator = new Manipulator(te=10, dt=1/100);
 });
+
+const torqueArray = [];
+torqueFileInput.addEventListener('change', (e) => {
+  const file = e.target.files;
+  file[0].text().then( (text) => {
+    const lines = text.split(/\n|\r\n/);
+    let isFirstLine = true;
+    for (const line of lines) {
+      if (isFirstLine === true | line.length === 0) {
+        isFirstLine = false;
+        continue;
+      }
+      const torqueStr = line.split(',');
+      const torque = [parseFloat(torqueStr[0]), parseFloat(torqueStr[1])];
+      torqueArray.push(torque);
+    }
+    startSimulatorBtn.disabled = false;
+  });
+}, false);
 
 startSimulatorBtn.disabled = true;
 startSimulatorBtn.addEventListener('click', () => {
@@ -107,8 +127,8 @@ function draw() {
 
 function getCanvasSize() {
   const canvasWidth = simulatorDiv.clientWidth;
-  const simulatorDivTop = simulatorDiv.getBoundingClientRect().top +
-    window.pageYOffset;
+  const canvasTopPixel = simulatorDiv.getBoundingClientRect().top;
+  const simulatorDivTop = canvasTopPixel + window.pageYOffset;
   console.log(simulatorDivTop);
   const canvasHeight = (window.innerHeight - simulatorDivTop) * 0.9;
   console.log(canvasHeight);
