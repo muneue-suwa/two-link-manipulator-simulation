@@ -7,7 +7,7 @@ const startSimulatorBtn = document.getElementById('startSimulator');
 const resetSimulatorBtn = document.getElementById('resetSimulator');
 const saveSimulatorBtn = document.getElementById('saveSimulator');
 const simulateTimeDiv = document.getElementById('simulateTime');
-const simulatorDiv = document.getElementById('simulator');
+const simulatorDiv = document.getElementById('simulationCanvas');
 
 const canvasSize = getCanvasSize();
 const fps = 60;
@@ -130,7 +130,7 @@ function getCanvasSize() {
   const canvasTopPixel = simulatorDiv.getBoundingClientRect().top;
   const simulatorDivTop = canvasTopPixel + window.pageYOffset;
   console.log(simulatorDivTop);
-  const canvasHeight = (window.innerHeight - simulatorDivTop) * 0.9;
+  const canvasHeight = (window.innerHeight - simulatorDivTop) - 10;
   console.log(canvasHeight);
   return [canvasWidth, canvasHeight];
 }
