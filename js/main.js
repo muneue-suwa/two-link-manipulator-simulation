@@ -116,6 +116,10 @@ showTargetBtn.addEventListener('click', () => {
   }
 });
 
+window.addEventListener('resize', () => {
+  alert('If you want to resize simulator, RELOAD THIS WINDOW.');
+}, {once: true});
+
 /**
  * Reset simulator
  */
