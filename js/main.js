@@ -8,6 +8,7 @@ const saveSimulatorBtn = document.getElementById('saveSimulator');
 const simulateTimeDiv = document.getElementById('simulateTime');
 const timeProgressBar = document.getElementById('timeProgressBar');
 const simulatorDiv = document.getElementById('simulationCanvas');
+const footerDiv = document.getElementById('footer');
 
 let canvasSize = getCanvasSize();
 
@@ -173,8 +174,10 @@ function drawManipulator(xy1, xy2) {
 
 function getCanvasSize() {
   const canvasWidth = simulatorDiv.clientWidth;
-  const canvasTopPixel = simulatorDiv.getBoundingClientRect().top;
-  const simulatorDivTop = canvasTopPixel + window.pageYOffset;
-  const canvasHeight = (window.innerHeight - simulatorDivTop) - 10;
+  const canvasTop = simulatorDiv.getBoundingClientRect().top;
+  const footerDivHeight = footerDiv.offsetHeight;
+  const simulatorDivTop = canvasTop + window.pageYOffset;
+  let canvasHeight = window.innerHeight - simulatorDivTop - footerDivHeight;
+  canvasHeight -= 15;
   return [canvasWidth, canvasHeight];
 }
