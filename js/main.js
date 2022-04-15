@@ -39,14 +39,16 @@ const fps = 60;
  * GLOABL VARIABLES
  * ----------------
  */
-let doDraw = false; // Do or do not execute draw()
+let coordinates; // Instance of CoordinatesConverter()
 let startTime; // Record start time of simulation
-let count = 0; // Count frame of simulator for draw()
+
 let xy1Array; // Manipulator coordinate: [[x1, y1], ...]
 let xy2Array; // Manipulator coordinate: [[x2, y2], ...]
+
+let doDraw = false; // Do or do not execute draw()
+let count = 0; // Count frame of simulator for draw()
 let frameNum; // Frame number of simulator
 let doShowTarget = 0; // Do or do not show target coordinate
-let coordinates; // Instance of CoordinatesConverter()
 /**
  * ----------------
  */
@@ -89,33 +91,49 @@ torqueFileInput.addEventListener('change', (e) => {
 
 // When start simulation button is clicked, start simulation
 startSimulatorBtn.addEventListener('click', () => {
+  // Calculate manipulator coordinate per frame
   [xy1Array, xy2Array] = manipulator.calcPositionPerFrame(torqueArray, fps);
+  // Get frame number
   frameNum = xy1Array.length;
-  doDraw = true;
-  startTime = Date.now();
+  // Disable start simulator button
   startSimulatorBtn.disabled = true;
+
+  // Get start time of simulation
+  startTime = Date.now();
+  // Start animation of progress bar
   simulationProgress.classList.add('progress-bar-striped');
   simulationProgress.classList.add('progress-bar-animated');
+  // Start loop of draw()
+  doDraw = true;
   loop();
 });
 
+// When reset simulation button is clicked, reset simulation
 resetSimulatorBtn.addEventListener('click', () => {
   resetSimulator();
+  // Disable start simulatior button
   startSimulatorBtn.disabled = false;
 });
 
+// When show target button is clicked, show or hide target position
 showTargetBtn.addEventListener('click', () => {
+  // Switch show or hide target position
   doShowTarget = 1 - doShowTarget;
   if (doShowTarget > 0) {
+    // Activate show target button
     showTargetBtn.classList.add('active');
   } else {
+    // Dectivate show target button
     showTargetBtn.classList.remove('active');
   }
   if (doDraw != true) {
+    // When draw() does not loop, execute draw() once
     draw();
   }
 });
 
+// When window is resized,
+// notice that canvas can be resized by reloading page only once
 window.addEventListener('resize', () => {
   alert('If you want to resize simulator, RELOAD THIS WINDOW.');
 }, {once: true});
