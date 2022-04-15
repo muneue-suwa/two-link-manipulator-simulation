@@ -31,6 +31,13 @@ class Manipulator {
     this.initY2 = 2 * l1 * math.cos(th1) + 2 * l2 * math.cos(th2);
   }
 
+  calcPixelRatio(canvasSize) {
+    const maxArmLength = (this.l1 + this.l2) * 2;
+    const minWidthOrHeight = Math.min(canvasSize[0], canvasSize[1]);
+    const pixelRatio = minWidthOrHeight / (maxArmLength * 2);
+    return pixelRatio;
+  }
+
   calcPositionPerFrame(torqueArray, fps) {
     const [dtXy1, dtXy2] = this.calcPositionPerDt(torqueArray);
     const frameXy1 = new Array(this.te * fps);

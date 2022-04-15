@@ -1,15 +1,15 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable require-jsdoc */
-const mode1Btn = document.getElementById('mode1-tab');
-const mode2Btn = document.getElementById('mode2-tab');
 const torqueFileInput = document.getElementById('torqueFile');
 const startSimulatorBtn = document.getElementById('startSimulator');
 const resetSimulatorBtn = document.getElementById('resetSimulator');
+const showTargetBtn = document.getElementById('showTarget');
 const saveSimulatorBtn = document.getElementById('saveSimulator');
 const simulateTimeDiv = document.getElementById('simulateTime');
 const simulatorDiv = document.getElementById('simulationCanvas');
 
 let canvasSize = getCanvasSize();
+
 const fps = 60;
 
 const allowableError = 0.03;
@@ -21,15 +21,10 @@ let count;
 let xy1;
 let xy2;
 let frameNum;
-let pixelRatio;
+let doShowTarget = 0;
 
-let manipulator;
-mode1Btn.addEventListener('click', () => {
-  manipulator = new Manipulator(te=15, dt=1/100);
-});
-mode2Btn.addEventListener('click', () => {
-  manipulator = new Manipulator(te=10, dt=1/100);
-});
+const manipulator = new Manipulator(te=15, dt=1/100);
+let pixelRatio = manipulator.calcPixelRatio(canvasSize);
 
 const torqueArray = [];
 torqueFileInput.addEventListener('change', (e) => {
@@ -65,12 +60,29 @@ resetSimulatorBtn.addEventListener('click', () => {
   startSimulatorBtn.disabled = false;
 });
 
+showTargetBtn.addEventListener('click', () => {
+  doShowTarget = 1 - doShowTarget;
+  if (doShowTarget > 0) {
+    showTargetBtn.classList.add('active');
+  } else {
+    showTargetBtn.classList.remove('active');
+  }
+  if (doDraw != true) {
+    redraw();
+  }
+});
+
 function resetSimulation() {
   canvasSize = getCanvasSize();
+  pixelRatio = manipulator.calcPixelRatio(canvasSize);
   background(240);
   count = 0;
+
   resetSimulatorBtn.checked = false;
   resetSimulatorBtn.disabled = true;
+
+  showTargetBtn.classList.remove('active');
+  doShowTarget = 0;
 }
 
 function setup() {
@@ -92,16 +104,18 @@ function draw() {
   const coordinates = new CoordinatesConverter(
       canvasWidth / 2, canvasHeight / 2, pixelRatio,
   );
-  if (doDraw != true) {
-    return 0;
-  } else if (isNaN(pixelRatio)) {
-    pixelRatio = calcPixelRatio();
-  }
 
   background(240);
-  strokeWeight(1);
-  stroke(200, 50, 50);
-  coordinates.circle(targetXY[0], targetXY[1], allowableError * 2);
+  if (doShowTarget > 0) {
+    strokeWeight(1);
+    console.log(doShowTarget);
+    stroke(200, 50, 50);
+    coordinates.circle(targetXY[0], targetXY[1], allowableError * 2);
+  }
+
+  if (doDraw != true) {
+    return 0;
+  }
 
   strokeWeight(5);
   stroke(50, 50, 200);
@@ -122,25 +136,10 @@ function draw() {
   }
 }
 
-// function windowResized() {
-//   canvasSize = getCanvasSize();
-//   pixelRatio = calcPixelRatio();
-//   resizeCanvas(canvasSize[0], canvasSize[1]);
-//   background(240);
-// }
-
 function getCanvasSize() {
   const canvasWidth = simulatorDiv.clientWidth;
   const canvasTopPixel = simulatorDiv.getBoundingClientRect().top;
   const simulatorDivTop = canvasTopPixel + window.pageYOffset;
   const canvasHeight = (window.innerHeight - simulatorDivTop) - 10;
   return [canvasWidth, canvasHeight];
-}
-
-function calcPixelRatio() {
-  const maxArmLength = (manipulator.l1 + manipulator.l2) * 2;
-  const minWidthOrHeight = Math.min(canvasSize[0], canvasSize[1]);
-  const pixelRatio = minWidthOrHeight / (maxArmLength * 2);
-  // console.log(pixelRatio);
-  return pixelRatio;
 }
