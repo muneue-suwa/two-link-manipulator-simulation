@@ -18,9 +18,9 @@ const canvasHolderDiv = document.getElementById(canvasHolderDivId);
 const footerDiv = document.getElementById('footer');
 
 /**
- * --------------------
- * MANIPULATOR SETTINGS
- * --------------------
+ * ------------------
+ * SIMULATOR SETTINGS
+ * ------------------
  */
 // Instance of Manipulator()
 const manipulator = new Manipulator(te=15, dt=1/100);
@@ -29,10 +29,11 @@ const targetXY = [1.2, -0.8];
 const allowableError = 0.03;
 // FPS of simulator
 const fps = 60;
+// Background color of simulator canvas
+const BACKGROUND_COLOR = 240;
 /**
- * --------------------
+ * ------------------
  */
-
 
 /**
  * ----------------
@@ -49,13 +50,14 @@ let doDraw = false; // Do or do not execute draw()
 let count = 0; // Count frame of simulator for draw()
 let frameNum; // Frame number of simulator
 let doShowTarget = 0; // Do or do not show target coordinate
+
+// Get p5.js canvas size and calculate pixel-coordinate ratio
+let canvasSize = getCanvasSize(); // Canvas size: [canvasWidth, canvasHeight]
+// Half of min(canvasWidth, canvasHeight) / manipulator arm full length
+let pixelRatio;
 /**
  * ----------------
  */
-
-// Get p5.js canvas size and calculate pixel-coordinate ratio
-let canvasSize = getCanvasSize();
-let pixelRatio = manipulator.calcPixelRatio(canvasSize);
 
 // Torque array read from csv file
 const torqueArray = [];
@@ -95,7 +97,8 @@ startSimulatorBtn.addEventListener('click', () => {
   [xy1Array, xy2Array] = manipulator.calcPositionPerFrame(torqueArray, fps);
   // Get frame number
   frameNum = xy1Array.length;
-  // Disable start simulator button
+  // Check and disable start simulator button
+  startSimulatorBtn.checked = true;
   startSimulatorBtn.disabled = true;
 
   // Get start time of simulation
@@ -121,10 +124,10 @@ showTargetBtn.addEventListener('click', () => {
   doShowTarget = 1 - doShowTarget;
   if (doShowTarget > 0) {
     // Activate show target button
-    showTargetBtn.classList.add('active');
+    showTargetBtn.checked = true;
   } else {
     // Dectivate show target button
-    showTargetBtn.classList.remove('active');
+    showTargetBtn.checked = false;
   }
   if (doDraw != true) {
     // When draw() does not loop, execute draw() once
@@ -142,25 +145,30 @@ window.addEventListener('resize', () => {
  * Reset simulator
  */
 function resetSimulator() {
+  // Resize p5.js canvas
   canvasSize = getCanvasSize();
   resizeCanvas(canvasSize[0], canvasSize[1]);
   pixelRatio = manipulator.calcPixelRatio(canvasSize);
   coordinates = new CoordinatesConverter(
       canvasSize[0] / 2, canvasSize[1] / 2, pixelRatio,
   );
-  background(240);
-  count = 0;
 
+  // Uncheck and disable reset simulator button
   resetSimulatorBtn.checked = false;
   resetSimulatorBtn.disabled = true;
 
-  showTargetBtn.classList.remove('active');
+  // Uncheck show target button and disable doShowTarget
+  showTargetBtn.checked = false;
   doShowTarget = 0;
 
+  // Reset elapsed time and progress bar
   elapsedTimeDiv.textContent = 'Time (sec): 0';
-  simulationProgress.setAttribute('style', `width: 0%;`);
+  simulationProgress.setAttribute('style', 'width: 0%;');
   simulationProgress.ariaValueNow = '0';
 
+  // Reset count of frame and canvas
+  count = 0;
+  background(BACKGROUND_COLOR);
   redraw();
 }
 
@@ -172,8 +180,8 @@ function setup() { // eslint-disable-line no-unused-vars
   simulationCanvas.parent(canvasHolderDivId);
   resetSimulator();
   frameRate(fps);
-  console.log('start: ', new Date());
-  background(240);
+  console.log('start:', new Date());
+  background(BACKGROUND_COLOR);
   noLoop();
 
   saveSimulatorBtn.addEventListener('click', () => {
@@ -213,13 +221,13 @@ function draw() {
   if (count === frameNum - 1) {
     doDraw = false;
     noLoop();
-    console.log('end: ', new Date());
+    console.log('end:', new Date());
     elapsedTimeDiv.textContent += ' Completed!';
     simulationProgress.setAttribute('style', `width: 100%;`);
     simulationProgress.ariaValueNow = '100';
     simulationProgress.classList.remove('progress-bar-striped');
     simulationProgress.classList.remove('progress-bar-animated');
-    startSimulatorBtn.classList.remove('active');
+    startSimulatorBtn.checked = false;
     resetSimulatorBtn.disabled = false;
   } else {
     count += 1;
