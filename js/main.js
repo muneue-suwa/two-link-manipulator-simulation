@@ -6,6 +6,7 @@ const resetSimulatorBtn = document.getElementById('resetSimulator');
 const targetBtn = document.getElementById('target');
 const saveSimulatorBtn = document.getElementById('saveSimulator');
 const simulateTimeDiv = document.getElementById('simulateTime');
+const timeProgressBar = document.getElementById('timeProgressBar');
 const simulatorDiv = document.getElementById('simulationCanvas');
 
 let canvasSize = getCanvasSize();
@@ -53,6 +54,8 @@ startSimulatorBtn.addEventListener('click', () => {
   doDraw = true;
   startTime = Date.now();
   startSimulatorBtn.disabled = true;
+  timeProgressBar.classList.add('progress-bar-striped');
+  timeProgressBar.classList.add('progress-bar-animated');
   loop();
 });
 
@@ -75,6 +78,7 @@ targetBtn.addEventListener('click', () => {
 
 function resetSimulation() {
   canvasSize = getCanvasSize();
+  resizeCanvas(canvasSize[0], canvasSize[1]);
   pixelRatio = manipulator.calcPixelRatio(canvasSize);
   coordinates = new CoordinatesConverter(
       canvasSize[0] / 2, canvasSize[1] / 2, pixelRatio,
@@ -89,6 +93,8 @@ function resetSimulation() {
   doShowTarget = 0;
 
   simulateTimeDiv.textContent = 'Time (sec): 0';
+  timeProgressBar.setAttribute('style', `width: 0%;`);
+  timeProgressBar.ariaValueNow = '0';
 
   redraw();
 }
@@ -125,15 +131,22 @@ function draw() {
   }
   drawManipulator(xy1Array[count], xy2Array[count]);
   const currentTime = (Date.now() - startTime) / 1000;
+
+  const progress = count * 100 / (frameNum - 1);
   simulateTimeDiv.textContent = `Time (sec): ${currentTime}`;
+  timeProgressBar.setAttribute('style', `width: ${progress}%;`);
+  timeProgressBar.ariaValueNow = `${progress}`;
 
   if (count === frameNum - 1) {
     doDraw = false;
     noLoop();
     console.log('end: ', new Date());
     simulateTimeDiv.textContent += ' Completed!';
+    timeProgressBar.classList.remove('progress-bar-striped');
+    timeProgressBar.classList.remove('progress-bar-animated');
+    timeProgressBar.setAttribute('style', `width: 100%;`);
+    timeProgressBar.ariaValueNow = '100';
     resetSimulatorBtn.disabled = false;
-
     return 0;
   }
 
