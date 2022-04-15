@@ -1,4 +1,13 @@
+# Node.js
 node_modules/
+
+# Temporary Files
 temp*
+
+# Sample Tau File
 js/tau.js
 tau.csv
+
+# Build
+build/
+*.zip
