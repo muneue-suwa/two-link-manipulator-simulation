@@ -43,8 +43,8 @@ class Manipulator {
     const frameXy1 = new Array(this.te * fps);
     const frameXy2 = new Array(this.te * fps);
     for (let i = 0; i < frameXy1.length; i++) {
-      frameXy1[i] = dtXy1[Math.trunc(i / (fps * this.dt))];
-      frameXy2[i] = dtXy2[Math.trunc(i / (fps * this.dt))];
+      frameXy1[i] = dtXy1[Math.floor(i / (fps * this.dt))];
+      frameXy2[i] = dtXy2[Math.floor(i / (fps * this.dt))];
     }
     return [frameXy1, frameXy2];
   }
