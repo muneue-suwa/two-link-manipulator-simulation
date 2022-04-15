@@ -161,6 +161,9 @@ function drawTarget() {
 }
 
 function drawManipulator(xy1, xy2) {
+  strokeWeight(1);
+  stroke(0, 0, 0);
+  coordinates.drawAxes();
   strokeWeight(5);
   stroke(50, 50, 200);
   coordinates.line(0, 0, xy1[0], xy1[1]);

@@ -23,4 +23,9 @@ class CoordinatesConverter {
         diameter * this.pixelRatio,
     );
   }
+
+  drawAxes() {
+    line(0, this.originY, this.originX * 2, this.originY);
+    line(this.originX, 0, this.originX, this.originY * 2);
+  }
 }
