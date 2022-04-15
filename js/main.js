@@ -3,7 +3,7 @@
 const torqueFileInput = document.getElementById('torqueFile');
 const startSimulatorBtn = document.getElementById('startSimulator');
 const resetSimulatorBtn = document.getElementById('resetSimulator');
-const showTargetBtn = document.getElementById('showTarget');
+const targetBtn = document.getElementById('target');
 const saveSimulatorBtn = document.getElementById('saveSimulator');
 const simulateTimeDiv = document.getElementById('simulateTime');
 const simulatorDiv = document.getElementById('simulationCanvas');
@@ -17,11 +17,12 @@ const targetXY = [1.2, -0.8];
 
 let doDraw = false;
 let startTime;
-let count;
-let xy1;
-let xy2;
+let count = 0;
+let xy1Array;
+let xy2Array;
 let frameNum;
 let doShowTarget = 0;
+let coordinates;
 
 const manipulator = new Manipulator(te=15, dt=1/100);
 let pixelRatio = manipulator.calcPixelRatio(canvasSize);
@@ -47,8 +48,8 @@ torqueFileInput.addEventListener('change', (e) => {
 
 startSimulatorBtn.disabled = true;
 startSimulatorBtn.addEventListener('click', () => {
-  [xy1, xy2] = manipulator.calcPositionPerFrame(torqueArray, fps);
-  frameNum = xy1.length;
+  [xy1Array, xy2Array] = manipulator.calcPositionPerFrame(torqueArray, fps);
+  frameNum = xy1Array.length;
   doDraw = true;
   startTime = Date.now();
   startSimulatorBtn.disabled = true;
@@ -60,29 +61,36 @@ resetSimulatorBtn.addEventListener('click', () => {
   startSimulatorBtn.disabled = false;
 });
 
-showTargetBtn.addEventListener('click', () => {
+targetBtn.addEventListener('click', () => {
   doShowTarget = 1 - doShowTarget;
   if (doShowTarget > 0) {
-    showTargetBtn.classList.add('active');
+    targetBtn.classList.add('active');
   } else {
-    showTargetBtn.classList.remove('active');
+    targetBtn.classList.remove('active');
   }
   if (doDraw != true) {
-    redraw();
+    draw();
   }
 });
 
 function resetSimulation() {
   canvasSize = getCanvasSize();
   pixelRatio = manipulator.calcPixelRatio(canvasSize);
+  coordinates = new CoordinatesConverter(
+      canvasSize[0] / 2, canvasSize[1] / 2, pixelRatio,
+  );
   background(240);
   count = 0;
 
   resetSimulatorBtn.checked = false;
   resetSimulatorBtn.disabled = true;
 
-  showTargetBtn.classList.remove('active');
+  targetBtn.classList.remove('active');
   doShowTarget = 0;
+
+  simulateTimeDiv.textContent = 'Time (sec): 0';
+
+  redraw();
 }
 
 function setup() {
@@ -91,6 +99,7 @@ function setup() {
   resetSimulation();
   frameRate(fps);
   console.log('start: ', new Date());
+  background(240);
   noLoop();
 
   saveSimulatorBtn.addEventListener('click', () => {
@@ -99,41 +108,51 @@ function setup() {
 }
 
 function draw() {
-  const canvasWidth = canvasSize[0];
-  const canvasHeight = canvasSize[1];
-  const coordinates = new CoordinatesConverter(
-      canvasWidth / 2, canvasHeight / 2, pixelRatio,
-  );
-
   background(240);
   if (doShowTarget > 0) {
-    strokeWeight(1);
-    console.log(doShowTarget);
-    stroke(200, 50, 50);
-    coordinates.circle(targetXY[0], targetXY[1], allowableError * 2);
+    drawTarget();
   }
-
   if (doDraw != true) {
+    if (count === 0) {
+      drawManipulator(
+          [manipulator.initX1, manipulator.initY1],
+          [manipulator.initX2, manipulator.initY2],
+      );
+    } else {
+      drawManipulator(xy1Array[count], xy2Array[count]);
+    }
     return 0;
   }
-
-  strokeWeight(5);
-  stroke(50, 50, 200);
-  coordinates.line(0, 0, xy1[count][0], xy1[count][1]);
-  stroke(50, 200, 50);
-  coordinates.line(xy1[count][0], xy1[count][1], xy2[count][0], xy2[count][1]);
-
-  count += 1;
+  drawManipulator(xy1Array[count], xy2Array[count]);
   const currentTime = (Date.now() - startTime) / 1000;
-  simulateTimeDiv.textContent = currentTime;
+  simulateTimeDiv.textContent = `Time (sec): ${currentTime}`;
 
-  if (count === frameNum) {
+  if (count === frameNum - 1) {
     doDraw = false;
     noLoop();
     console.log('end: ', new Date());
     simulateTimeDiv.textContent += ' Completed!';
     resetSimulatorBtn.disabled = false;
+
+    return 0;
   }
+
+  count += 1;
+}
+
+function drawTarget() {
+  strokeWeight(1);
+  // console.log(doShowTarget);
+  stroke(200, 50, 50);
+  coordinates.circle(targetXY[0], targetXY[1], allowableError * 2);
+}
+
+function drawManipulator(xy1, xy2) {
+  strokeWeight(5);
+  stroke(50, 50, 200);
+  coordinates.line(0, 0, xy1[0], xy1[1]);
+  stroke(50, 200, 50);
+  coordinates.line(xy1[0], xy1[1], xy2[0], xy2[1]);
 }
 
 function getCanvasSize() {
