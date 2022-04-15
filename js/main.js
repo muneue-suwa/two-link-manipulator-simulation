@@ -1,83 +1,125 @@
-/* eslint-disable no-unused-vars */
-/* eslint-disable require-jsdoc */
-const torqueFileInput = document.getElementById('torqueFile');
-const startSimulatorBtn = document.getElementById('startSimulator');
-const resetSimulatorBtn = document.getElementById('resetSimulator');
-const targetBtn = document.getElementById('target');
-const saveSimulatorBtn = document.getElementById('saveSimulator');
-const simulateTimeDiv = document.getElementById('simulateTime');
-const timeProgressBar = document.getElementById('timeProgressBar');
-const simulatorDiv = document.getElementById('simulationCanvas');
+// Input: Open torque file
+const torqueFileInput = document.getElementById('torque-file');
+// Buttons: Start and reset the simulator
+const startSimulatorBtn = document.getElementById('start-simulator');
+const resetSimulatorBtn = document.getElementById('reset-simulator');
+// Button: Show or hide target
+const showTargetBtn = document.getElementById('show-target');
+// Button: Save simulator canvas
+const saveSimulatorBtn = document.getElementById('save-simulator');
+// Div: Elapsed time of simulation
+const elapsedTimeDiv = document.getElementById('elapsed-time');
+// Progress of simulation
+const simulationProgress = document.getElementById('simulation-progress');
+// Div: Canvas holder
+const canvasHolderDivId = 'canvas-holder';
+const canvasHolderDiv = document.getElementById(canvasHolderDivId);
+// Div: footer
 const footerDiv = document.getElementById('footer');
 
-let canvasSize = getCanvasSize();
-
-const fps = 60;
-
-const allowableError = 0.03;
-const targetXY = [1.2, -0.8];
-
-let doDraw = false;
-let startTime;
-let count = 0;
-let xy1Array;
-let xy2Array;
-let frameNum;
-let doShowTarget = 0;
-let coordinates;
-
+/**
+ * --------------------
+ * MANIPULATOR SETTINGS
+ * --------------------
+ */
+// Instance of Manipulator()
 const manipulator = new Manipulator(te=15, dt=1/100);
+// Target coordinate and allowable error
+const targetXY = [1.2, -0.8];
+const allowableError = 0.03;
+// FPS of simulator
+const fps = 60;
+/**
+ * --------------------
+ */
+
+
+/**
+ * ----------------
+ * GLOABL VARIABLES
+ * ----------------
+ */
+let doDraw = false; // Do or do not execute draw()
+let startTime; // Record start time of simulation
+let count = 0; // Count frame of simulator for draw()
+let xy1Array; // Manipulator coordinate: [[x1, y1], ...]
+let xy2Array; // Manipulator coordinate: [[x2, y2], ...]
+let frameNum; // Frame number of simulator
+let doShowTarget = 0; // Do or do not show target coordinate
+let coordinates; // Instance of CoordinatesConverter()
+/**
+ * ----------------
+ */
+
+// Get p5.js canvas size and calculate pixel-coordinate ratio
+let canvasSize = getCanvasSize();
 let pixelRatio = manipulator.calcPixelRatio(canvasSize);
 
+// Torque array read from csv file
 const torqueArray = [];
+// When torque is selected, format data and assign them to torqueArray
 torqueFileInput.addEventListener('change', (e) => {
+  // Blob interface of the selected file
   const file = e.target.files;
-  file[0].text().then( (text) => {
+  // Read text data
+  file[0].text().then((text) => {
+    // Split text with newline characters (\n for macOS or \r\n for Windows OS)
     const lines = text.split(/\n|\r\n/);
+    // Read lines
     let isFirstLine = true;
     for (const line of lines) {
-      if (isFirstLine === true | line.length === 0) {
+      if (isFirstLine === true) {
+        // When the firt line, continue
         isFirstLine = false;
         continue;
+      } else if (line.length === 0) {
+        // When the end line, break
+        break;
       }
+      // Split line and convert the strings to torque number array
       const torqueStr = line.split(',');
       const torque = [parseFloat(torqueStr[0]), parseFloat(torqueStr[1])];
+      // Add the converted torque array to torqueArray
       torqueArray.push(torque);
     }
+    // Enable start simulation button
     startSimulatorBtn.disabled = false;
   });
-}, false);
+});
 
-startSimulatorBtn.disabled = true;
+// When start simulation button is clicked, start simulation
 startSimulatorBtn.addEventListener('click', () => {
   [xy1Array, xy2Array] = manipulator.calcPositionPerFrame(torqueArray, fps);
   frameNum = xy1Array.length;
   doDraw = true;
   startTime = Date.now();
   startSimulatorBtn.disabled = true;
-  timeProgressBar.classList.add('progress-bar-striped');
-  timeProgressBar.classList.add('progress-bar-animated');
+  simulationProgress.classList.add('progress-bar-striped');
+  simulationProgress.classList.add('progress-bar-animated');
   loop();
 });
 
 resetSimulatorBtn.addEventListener('click', () => {
-  resetSimulation();
+  resetSimulator();
   startSimulatorBtn.disabled = false;
 });
 
-targetBtn.addEventListener('click', () => {
+showTargetBtn.addEventListener('click', () => {
   doShowTarget = 1 - doShowTarget;
   if (doShowTarget > 0) {
-    targetBtn.classList.add('active');
+    showTargetBtn.classList.add('active');
   } else {
-    targetBtn.classList.remove('active');
+    showTargetBtn.classList.remove('active');
   }
   if (doDraw != true) {
     draw();
   }
 });
 
-function resetSimulation() {
+/**
+ * Reset simulator
+ */
+function resetSimulator() {
   canvasSize = getCanvasSize();
   resizeCanvas(canvasSize[0], canvasSize[1]);
   pixelRatio = manipulator.calcPixelRatio(canvasSize);
@@ -90,20 +132,23 @@ function resetSimulation() {
   resetSimulatorBtn.checked = false;
   resetSimulatorBtn.disabled = true;
 
-  targetBtn.classList.remove('active');
+  showTargetBtn.classList.remove('active');
   doShowTarget = 0;
 
-  simulateTimeDiv.textContent = 'Time (sec): 0';
-  timeProgressBar.setAttribute('style', `width: 0%;`);
-  timeProgressBar.ariaValueNow = '0';
+  elapsedTimeDiv.textContent = 'Time (sec): 0';
+  simulationProgress.setAttribute('style', `width: 0%;`);
+  simulationProgress.ariaValueNow = '0';
 
   redraw();
 }
 
-function setup() {
+/**
+ * Setup function executed by p5.js
+ */
+function setup() { // eslint-disable-line no-unused-vars
   const simulationCanvas = createCanvas(canvasSize[0], canvasSize[1]);
-  simulationCanvas.parent('simulationCanvas');
-  resetSimulation();
+  simulationCanvas.parent(canvasHolderDivId);
+  resetSimulator();
   frameRate(fps);
   console.log('start: ', new Date());
   background(240);
@@ -114,6 +159,11 @@ function setup() {
   });
 }
 
+/**
+ * Draw function executed by p5.js
+ *
+ * @return {Number} Return 0 when draw() must not be executed.
+ */
 function draw() {
   background(240);
   if (doShowTarget > 0) {
@@ -134,26 +184,29 @@ function draw() {
   const currentTime = (Date.now() - startTime) / 1000;
 
   const progress = count * 100 / (frameNum - 1);
-  simulateTimeDiv.textContent = `Time (sec): ${currentTime}`;
-  timeProgressBar.setAttribute('style', `width: ${progress}%;`);
-  timeProgressBar.ariaValueNow = `${progress}`;
+  elapsedTimeDiv.textContent = `Time (sec): ${currentTime}`;
+  simulationProgress.setAttribute('style', `width: ${progress}%;`);
+  simulationProgress.ariaValueNow = `${progress}`;
 
   if (count === frameNum - 1) {
     doDraw = false;
     noLoop();
     console.log('end: ', new Date());
-    simulateTimeDiv.textContent += ' Completed!';
-    timeProgressBar.classList.remove('progress-bar-striped');
-    timeProgressBar.classList.remove('progress-bar-animated');
-    timeProgressBar.setAttribute('style', `width: 100%;`);
-    timeProgressBar.ariaValueNow = '100';
+    elapsedTimeDiv.textContent += ' Completed!';
+    simulationProgress.setAttribute('style', `width: 100%;`);
+    simulationProgress.ariaValueNow = '100';
+    simulationProgress.classList.remove('progress-bar-striped');
+    simulationProgress.classList.remove('progress-bar-animated');
+    startSimulatorBtn.classList.remove('active');
     resetSimulatorBtn.disabled = false;
-    return 0;
+  } else {
+    count += 1;
   }
-
-  count += 1;
 }
 
+/**
+ * Draw target coordinate
+ */
 function drawTarget() {
   strokeWeight(1);
   // console.log(doShowTarget);
@@ -161,6 +214,12 @@ function drawTarget() {
   coordinates.circle(targetXY[0], targetXY[1], allowableError * 2);
 }
 
+/**
+ * Draw manipulator from [x1, y1] and [x2, y2]
+ *
+ * @param {Array} xy1 [x1, y1]
+ * @param {Array} xy2 [x2, y2]
+ */
 function drawManipulator(xy1, xy2) {
   strokeWeight(1);
   stroke(0, 0, 0);
@@ -172,9 +231,14 @@ function drawManipulator(xy1, xy2) {
   coordinates.line(xy1[0], xy1[1], xy2[0], xy2[1]);
 }
 
+/**
+ * Get canvas size of p5.js canvas from HTML elements
+ *
+ * @return {Array} [canvasWidth, canvasHeight] of p5.js canvas
+ */
 function getCanvasSize() {
-  const canvasWidth = simulatorDiv.clientWidth;
-  const canvasTop = simulatorDiv.getBoundingClientRect().top;
+  const canvasWidth = canvasHolderDiv.clientWidth;
+  const canvasTop = canvasHolderDiv.getBoundingClientRect().top;
   const footerDivHeight = footerDiv.offsetHeight;
   const simulatorDivTop = canvasTop + window.pageYOffset;
   let canvasHeight = window.innerHeight - simulatorDivTop - footerDivHeight;
