@@ -258,7 +258,6 @@ function windowResized() { // eslint-disable-line no-unused-vars
  */
 function drawTarget() {
   strokeWeight(1);
-  // console.log(doShowTarget);
   stroke(200, 50, 50);
   coordinates.circle(targetXY[0], targetXY[1], allowableError * 2);
 }
@@ -270,9 +269,12 @@ function drawTarget() {
  * @param {Array} xy2 [x2, y2]
  */
 function drawManipulator(xy1, xy2) {
+  // Draw axes
   strokeWeight(1);
   stroke(0, 0, 0);
   coordinates.drawAxes();
+
+  // Draw manipulator
   strokeWeight(5);
   stroke(50, 50, 200);
   coordinates.line(0, 0, xy1[0], xy1[1]);
@@ -286,11 +288,16 @@ function drawManipulator(xy1, xy2) {
  * @return {Array} [canvasWidth, canvasHeight] of p5.js canvas
  */
 function getCanvasSize() {
+  // Calculate canvas width
   const canvasWidth = canvasHolderDiv.clientWidth;
+
+  // Calculate canvas Height
   const canvasTop = canvasHolderDiv.getBoundingClientRect().top;
   const footerDivHeight = footerDiv.offsetHeight;
   const simulatorDivTop = canvasTop + window.pageYOffset;
   let canvasHeight = window.innerHeight - simulatorDivTop - footerDivHeight;
+  // Reduce canvasHeight because canvas is slightly smaller than canvas-holder
   canvasHeight -= 15;
+
   return [canvasWidth, canvasHeight];
 }
