@@ -136,9 +136,13 @@ showTargetBtn.addEventListener('click', () => {
 });
 
 // When window is resized,
-// notice that canvas can be resized by reloading page only once
+// notice that canvas cannot be resized while running simulation only once
 window.addEventListener('resize', () => {
-  alert('If you want to resize simulator, RELOAD THIS WINDOW.');
+  if (doDraw === false) {
+    alert(
+        'CAUSION: You cannnot resize simulator while running simulation',
+    );
+  }
 }, {once: true});
 
 /**
@@ -156,10 +160,6 @@ function resetSimulator() {
   // Uncheck and disable reset simulator button
   resetSimulatorBtn.checked = false;
   resetSimulatorBtn.disabled = true;
-
-  // Uncheck show target button and disable doShowTarget
-  showTargetBtn.checked = false;
-  doShowTarget = 0;
 
   // Reset elapsed time and progress bar
   elapsedTimeDiv.textContent = 'Time (sec): 0';
@@ -231,6 +231,25 @@ function draw() {
     resetSimulatorBtn.disabled = false;
   } else {
     count += 1;
+  }
+}
+
+/**
+ * Redraw canvas when windows is resized
+ */
+function windowResized() { // eslint-disable-line no-unused-vars
+  if (doDraw === false) {
+    // Resize p5.js canvas
+    canvasSize = getCanvasSize();
+    resizeCanvas(canvasSize[0], canvasSize[1]);
+    pixelRatio = manipulator.calcPixelRatio(canvasSize);
+    coordinates = new CoordinatesConverter(
+        canvasSize[0] / 2, canvasSize[1] / 2, pixelRatio,
+    );
+
+    // Redraw canvas
+    background(BACKGROUND_COLOR);
+    redraw();
   }
 }
 
