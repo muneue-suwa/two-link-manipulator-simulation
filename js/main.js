@@ -61,7 +61,9 @@ let pixelRatio;
 
 // Torque array read from csv file
 const torqueArray = [];
-// When torque is selected, format data and assign them to torqueArray
+/**
+ * When torque is selected, format data and assign them to torqueArray
+ */
 torqueFileInput.addEventListener('change', (e) => {
   // Blob interface of the selected file
   const file = e.target.files;
@@ -91,7 +93,9 @@ torqueFileInput.addEventListener('change', (e) => {
   });
 });
 
-// When start simulation button is clicked, start simulation
+/**
+ * When start simulation button is clicked, start simulation
+ */
 startSimulatorBtn.addEventListener('click', () => {
   // Calculate manipulator coordinate per frame
   [xy1Array, xy2Array] = manipulator.calcPositionPerFrame(torqueArray, fps);
@@ -111,14 +115,18 @@ startSimulatorBtn.addEventListener('click', () => {
   loop();
 });
 
-// When reset simulation button is clicked, reset simulation
+/**
+ * When reset simulation button is clicked, reset simulation
+ */
 resetSimulatorBtn.addEventListener('click', () => {
   resetSimulator();
   // Disable start simulatior button
   startSimulatorBtn.disabled = false;
 });
 
-// When show target button is clicked, show or hide target position
+/**
+ * When show target button is clicked, show or hide target position
+ */
 showTargetBtn.addEventListener('click', () => {
   // Switch show or hide target position
   doShowTarget = 1 - doShowTarget;
@@ -135,8 +143,17 @@ showTargetBtn.addEventListener('click', () => {
   }
 });
 
-// When window is resized,
-// notice that canvas cannot be resized while running simulation only once
+/**
+ * When save button is clicked, capture and save simulator canvas
+ */
+saveSimulatorBtn.addEventListener('click', () => {
+  saveCanvas('result', 'png');
+});
+
+/**
+ * When window is resized,
+ * notice that canvas cannot be resized while running simulation only once
+ */
 window.addEventListener('resize', () => {
   if (doDraw === false) {
     alert(
@@ -176,17 +193,16 @@ function resetSimulator() {
  * Setup function executed by p5.js
  */
 function setup() { // eslint-disable-line no-unused-vars
+  // Create canvas and set the position to div#canvas-holer
   const simulationCanvas = createCanvas(canvasSize[0], canvasSize[1]);
   simulationCanvas.parent(canvasHolderDivId);
-  resetSimulator();
-  frameRate(fps);
-  console.log('start:', new Date());
-  background(BACKGROUND_COLOR);
-  noLoop();
 
-  saveSimulatorBtn.addEventListener('click', () => {
-    saveCanvas(simulationCanvas, 'result', 'png');
-  });
+  resetSimulator(); // Reset Simulator
+  frameRate(fps); // Set framerate of simulator
+  console.log('start:', new Date()); // Print start datetime
+
+  // Disable loop because xy1Array, xy2Array are not caluculated
+  noLoop();
 }
 
 /**
@@ -195,11 +211,16 @@ function setup() { // eslint-disable-line no-unused-vars
  * @return {Number} Return 0 when draw() must not be executed.
  */
 function draw() {
-  background(240);
+  // Fill canvas with BACKGROUND_COLOR
+  background(BACKGROUND_COLOR);
+
   if (doShowTarget > 0) {
+    // Draw target position
     drawTarget();
   }
-  if (doDraw != true) {
+
+  if (doDraw === false) {
+    // When doDraw is false, draw manipulaltor on the moment and return 0
     if (count === 0) {
       drawManipulator(
           [manipulator.initX1, manipulator.initY1],
@@ -210,26 +231,35 @@ function draw() {
     }
     return 0;
   }
-  drawManipulator(xy1Array[count], xy2Array[count]);
-  const currentTime = (Date.now() - startTime) / 1000;
 
-  const progress = count * 100 / (frameNum - 1);
+  // Draw manipulator
+  drawManipulator(xy1Array[count], xy2Array[count]);
+  // Calculate and show elapsed time
+  const currentTime = (Date.now() - startTime) / 1000;
   elapsedTimeDiv.textContent = `Time (sec): ${currentTime}`;
+  // Calculate and show elapsed percentage
+  const progress = count * 100 / (frameNum - 1);
   simulationProgress.setAttribute('style', `width: ${progress}%;`);
   simulationProgress.ariaValueNow = `${progress}`;
 
   if (count === frameNum - 1) {
+    // When the current frame is the last one, stop simulation
     doDraw = false;
     noLoop();
+    // Show end datetime
     console.log('end:', new Date());
+    // Show completed message
     elapsedTimeDiv.textContent += ' Completed!';
+    // Stop progress bar
     simulationProgress.setAttribute('style', `width: 100%;`);
     simulationProgress.ariaValueNow = '100';
     simulationProgress.classList.remove('progress-bar-striped');
     simulationProgress.classList.remove('progress-bar-animated');
-    startSimulatorBtn.checked = false;
-    resetSimulatorBtn.disabled = false;
+
+    startSimulatorBtn.checked = false; // Uncheck start simulator button
+    resetSimulatorBtn.disabled = false; // Deactivate reset simulator button
   } else {
+    // Add count of frame
     count += 1;
   }
 }
@@ -296,7 +326,8 @@ function getCanvasSize() {
   const footerDivHeight = footerDiv.offsetHeight;
   const simulatorDivTop = canvasTop + window.pageYOffset;
   let canvasHeight = window.innerHeight - simulatorDivTop - footerDivHeight;
-  // Reduce canvasHeight because canvas is slightly smaller than canvas-holder
+  // Reduce canvasHeight because canvas is slightly smaller
+  // than div#canvas-holder
   canvasHeight -= 15;
 
   return [canvasWidth, canvasHeight];
