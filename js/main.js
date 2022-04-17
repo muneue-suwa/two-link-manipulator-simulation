@@ -152,12 +152,12 @@ saveSimulatorBtn.addEventListener('click', () => {
 
 /**
  * When window is resized,
- * notice that canvas cannot be resized while running simulation only once
+ * notice that canvas cannot be resized after starting simulation only once
  */
 window.addEventListener('resize', () => {
   if (doDraw === false) {
     alert(
-        'CAUSION: You cannnot resize simulator while running simulation',
+        'CAUSION: You cannot resize simulator after starting simulation',
     );
   }
 }, {once: true});
@@ -265,10 +265,10 @@ function draw() {
 }
 
 /**
- * Redraw canvas when windows is resized
+ * Redraw canvas when window is resized
  */
 function windowResized() { // eslint-disable-line no-unused-vars
-  if (doDraw === false) {
+  if (doDraw === false && count === 0) {
     // Resize p5.js canvas
     canvasSize = getCanvasSize();
     resizeCanvas(canvasSize[0], canvasSize[1]);
