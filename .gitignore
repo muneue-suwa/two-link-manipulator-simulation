@@ -10,4 +10,5 @@ tau.csv
 
 # Build
 build/
+public/
 *.zip
