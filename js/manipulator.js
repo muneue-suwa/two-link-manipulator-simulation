@@ -1,6 +1,23 @@
-/* eslint-disable require-jsdoc */
-/* eslint-disable no-unused-vars */
-class Manipulator {
+/**
+ * Manipulator class
+ */
+class Manipulator { // eslint-disable-line no-unused-vars
+  /**
+   * Initialize manipulator
+   *
+   * @param {Number} te Simulation time
+   * @param {Number} dt delta-time
+   * @param {Number} th1 theta 1
+   * @param {Number} th2 theta 2
+   * @param {Number} dth1 d theta 1
+   * @param {Number} dth2 d theta 2
+   * @param {Number} m1 Mass of arm 1
+   * @param {Number} m2 Mass of arm 2
+   * @param {Number} l1 Length of arm 1
+   * @param {Number} l2 Length of arm 2
+   * @param {Number} D1 D1
+   * @param {Number} D2 D2
+   */
   constructor(
       te = 15, dt = 1 / 100,
       th1 = Math.PI / 2, th2 = Math.PI,
@@ -31,6 +48,12 @@ class Manipulator {
     this.initY2 = 2 * l1 * math.cos(th1) + 2 * l2 * math.cos(th2);
   }
 
+  /**
+   * Calculate canvas pixel ratio from canvas size
+   *
+   * @param {Array} canvasSize
+   * @return {Number}
+   */
   calcPixelRatio(canvasSize) {
     const maxArmLength = (this.l1 + this.l2) * 2;
     const minWidthOrHeight = Math.min(canvasSize[0], canvasSize[1]);
@@ -38,6 +61,13 @@ class Manipulator {
     return pixelRatio;
   }
 
+  /**
+   * Calculate arm position per frame
+   *
+   * @param {Array} torqueArray Torque array
+   * @param {Number} fps FPS of simulator
+   * @return {Array} Arm position array per frame
+   */
   calcPositionPerFrame(torqueArray, fps) {
     const [dtXy1, dtXy2] = this.calcPositionPerDt(torqueArray);
     const frameXy1 = new Array(this.te * fps);
@@ -49,6 +79,12 @@ class Manipulator {
     return [frameXy1, frameXy2];
   }
 
+  /**
+   * Calculate arm position from dt
+   *
+   * @param {Array} torqueArray Torque array
+   * @return {Array} Arm position array per dt
+   */
   calcPositionPerDt(torqueArray) {
     const dt = this.dt;
     const nt = this.te / dt + 1;
