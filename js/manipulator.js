@@ -52,7 +52,7 @@ class Manipulator { // eslint-disable-line no-unused-vars
    * Calculate canvas pixel ratio from canvas size
    *
    * @param {Array} canvasSize
-   * @return {Number}
+   * @return {Number} Pixel ratio
    */
   calcPixelRatio(canvasSize) {
     const maxArmLength = (this.l1 + this.l2) * 2;
