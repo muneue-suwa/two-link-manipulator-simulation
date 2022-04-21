@@ -60,7 +60,7 @@ let pixelRatio;
  */
 
 // Torque array read from csv file
-const torqueArray = [];
+let torqueArray;
 /**
  * When torque is selected, format data and assign them to torqueArray
  */
@@ -71,14 +71,11 @@ torqueFileInput.addEventListener('change', (e) => {
   file[0].text().then((text) => {
     // Split text with newline characters (\n for macOS or \r\n for Windows OS)
     const lines = text.split(/\n|\r\n/);
+    // Initialize torqueArray
+    torqueArray = [];
     // Read lines
-    let isFirstLine = true;
     for (const line of lines) {
-      if (isFirstLine === true) {
-        // When the firt line, continue
-        isFirstLine = false;
-        continue;
-      } else if (line.length === 0) {
+      if (line.length === 0) {
         // When the end line, break
         break;
       }
