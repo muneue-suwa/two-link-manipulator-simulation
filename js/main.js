@@ -104,6 +104,7 @@ startSimulatorBtn.addEventListener('click', () => {
 
   // Get start time of simulation
   startTime = Date.now();
+  console.log('start:', new Date()); // Print start datetime
   // Start animation of progress bar
   simulationProgress.classList.add('progress-bar-striped');
   simulationProgress.classList.add('progress-bar-animated');
@@ -196,7 +197,6 @@ function setup() { // eslint-disable-line no-unused-vars
 
   resetSimulator(); // Reset Simulator
   frameRate(fps); // Set framerate of simulator
-  console.log('start:', new Date()); // Print start datetime
 
   // Disable loop because xy1Array, xy2Array are not caluculated
   noLoop();
