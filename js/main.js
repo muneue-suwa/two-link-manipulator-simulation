@@ -23,7 +23,7 @@ const footerDiv = document.getElementById('footer');
  * ------------------
  */
 // Instance of Manipulator()
-const manipulator = new Manipulator(te=15, dt=1/100);
+const manipulator = new Manipulator(te=8, dt=1/100, th1=Math.PI, th2=Math.PI);
 // Target coordinate and allowable error
 const targetXY = [1.2, -0.8];
 const allowableError = 0.03;
