@@ -12,8 +12,11 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
+      - name: Output Version
+        run: echo "const version = '${{ github.ref_name }}';" | tee js/version.js
+
       - name: Build
-        run: bash deploy.sh
+        run: bash build.sh
 
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3

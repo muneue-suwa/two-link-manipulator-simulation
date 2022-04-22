@@ -59,6 +59,9 @@ let pixelRatio;
  * ----------------
  */
 
+// Insert version information in title
+document.title += ` ${version}`;
+
 // Torque array read from csv file
 let torqueArray;
 /**

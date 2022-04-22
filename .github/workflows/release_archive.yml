@@ -8,16 +8,21 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@master
-    - name: Archive Release
-      uses: thedoctor0/zip-release@master
-      with:
-        type: 'zip'
-        filename: 'release.zip'
-        exclusions: '*.git* /*node_modules/* /*.vscode/* package*.json .*.json *.sh *.md'
+      - uses: actions/checkout@master
 
-    - name: Upload Release
-      uses: ncipollo/release-action@v1
-      with:
-        artifacts: "release.zip"
-        token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Output Version
+        run: echo "const version = '${{ github.ref_name }}';" | tee js/version.js
+
+
+      - name: Archive Release
+        uses: thedoctor0/zip-release@master
+        with:
+          type: 'zip'
+          filename: 'release_${{ github.ref_name }}.zip'
+          exclusions: '*.git* /*node_modules/* /*.vscode/* package*.json .*.json *.sh *.md'
+
+      - name: Upload Release
+        uses: ncipollo/release-action@v1
+        with:
+          artifacts: "release_${{ github.ref_name }}.zip"
+          token: ${{ secrets.GITHUB_TOKEN }}
