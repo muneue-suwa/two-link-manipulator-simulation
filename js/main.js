@@ -1,21 +1,21 @@
 // Input: Open torque file
-const torqueFileInput = document.getElementById('torque-file');
+const TORQUE_FILE_INPUT = document.getElementById('torque-file');
 // Buttons: Start and reset the simulator
-const startSimulatorBtn = document.getElementById('start-simulator');
-const resetSimulatorBtn = document.getElementById('reset-simulator');
+const START_SIMULATOR_BTN = document.getElementById('start-simulator');
+const RESET_SIMULATOR_BTN = document.getElementById('reset-simulator');
 // Button: Show or hide target
-const showTargetBtn = document.getElementById('show-target');
+const SHOW_TARGET_BTN = document.getElementById('show-target');
 // Button: Save simulator canvas
-const saveSimulatorBtn = document.getElementById('save-simulator');
+const SAVE_SIMULATOR_BTN = document.getElementById('save-simulator');
 // Div: Elapsed time of simulation
-const elapsedTimeDiv = document.getElementById('elapsed-time');
+const ELAPSED_TIME_DIV = document.getElementById('elapsed-time');
 // Progress of simulation
-const simulationProgress = document.getElementById('simulation-progress');
+const SIMULATION_PROGRESS = document.getElementById('simulation-progress');
 // Div: Canvas holder
-const canvasHolderDivId = 'canvas-holder';
-const canvasHolderDiv = document.getElementById(canvasHolderDivId);
+const CANVAS_HOLDER_DIV_ID = 'canvas-holder';
+const CANVAS_HOLDER_DIV = document.getElementById(CANVAS_HOLDER_DIV_ID);
 // Div: footer
-const footerDiv = document.getElementById('footer');
+const FOOTER_DIV = document.getElementById('footer');
 
 /**
  * ------------------
@@ -68,7 +68,7 @@ let torqueArray;
 /**
  * When torque is selected, format data and assign them to torqueArray
  */
-torqueFileInput.addEventListener('change', (e) => {
+TORQUE_FILE_INPUT.addEventListener('change', (e) => {
   // Blob interface of the selected file
   const file = e.target.files;
   // Read text data
@@ -91,13 +91,14 @@ torqueFileInput.addEventListener('change', (e) => {
     }
     // If torque file has enough torque values, enable start simulation button
     if (manipulator.isEnoughTorqueArray(torqueArray)) {
-      startSimulatorBtn.disabled = false;
-      elapsedTimeDiv.textContent = 'Time (sec): 0';
-      elapsedTimeDiv.style.color = '';
+      START_SIMULATOR_BTN.disabled = false;
+      ELAPSED_TIME_DIV.textContent = 'Time (sec): 0';
+      ELAPSED_TIME_DIV.style.color = '';
     } else {
-      startSimulatorBtn.disabled = true;
-      elapsedTimeDiv.textContent = 'Has not enough torque values';
-      elapsedTimeDiv.style.color = 'red';
+      START_SIMULATOR_BTN.disabled = true;
+      RESET_SIMULATOR_BTN.disabled = true;
+      ELAPSED_TIME_DIV.textContent = 'Has not enough torque values';
+      ELAPSED_TIME_DIV.style.color = 'red';
     }
   });
 });
@@ -105,20 +106,20 @@ torqueFileInput.addEventListener('change', (e) => {
 /**
  * When start simulation button is clicked, start simulation
  */
-startSimulatorBtn.addEventListener('click', () => {
+START_SIMULATOR_BTN.addEventListener('click', () => {
   // Calculate manipulator coordinate per frame
   [xy1Array, xy2Array] = manipulator.calcPositionPerFrame(torqueArray, fps);
   // Get frame number
   frameNum = xy1Array.length;
   // Check and disable start simulator button
-  startSimulatorBtn.checked = true;
-  startSimulatorBtn.disabled = true;
+  START_SIMULATOR_BTN.checked = true;
+  START_SIMULATOR_BTN.disabled = true;
 
   // Print start time of simulation
   console.log('start:', new Date()); // Print start datetime
   // Start animation of progress bar
-  simulationProgress.classList.add('progress-bar-striped');
-  simulationProgress.classList.add('progress-bar-animated');
+  SIMULATION_PROGRESS.classList.add('progress-bar-striped');
+  SIMULATION_PROGRESS.classList.add('progress-bar-animated');
   // Start loop of draw()
   doDraw = true;
   loop();
@@ -127,24 +128,24 @@ startSimulatorBtn.addEventListener('click', () => {
 /**
  * When reset simulation button is clicked, reset simulation
  */
-resetSimulatorBtn.addEventListener('click', () => {
+RESET_SIMULATOR_BTN.addEventListener('click', () => {
   resetSimulator();
   // Disable start simulatior button
-  startSimulatorBtn.disabled = false;
+  START_SIMULATOR_BTN.disabled = false;
 });
 
 /**
  * When show target button is clicked, show or hide target position
  */
-showTargetBtn.addEventListener('click', () => {
+SHOW_TARGET_BTN.addEventListener('click', () => {
   // Switch show or hide target position
   doShowTarget = 1 - doShowTarget;
   if (doShowTarget > 0) {
     // Activate show target button
-    showTargetBtn.checked = true;
+    SHOW_TARGET_BTN.checked = true;
   } else {
     // Dectivate show target button
-    showTargetBtn.checked = false;
+    SHOW_TARGET_BTN.checked = false;
   }
   if (doDraw != true) {
     // When draw() does not loop, execute draw() once
@@ -155,7 +156,7 @@ showTargetBtn.addEventListener('click', () => {
 /**
  * When save button is clicked, capture and save simulator canvas
  */
-saveSimulatorBtn.addEventListener('click', () => {
+SAVE_SIMULATOR_BTN.addEventListener('click', () => {
   saveCanvas('result', 'png');
 });
 
@@ -184,13 +185,13 @@ function resetSimulator() {
   );
 
   // Uncheck and disable reset simulator button
-  resetSimulatorBtn.checked = false;
-  resetSimulatorBtn.disabled = true;
+  RESET_SIMULATOR_BTN.checked = false;
+  RESET_SIMULATOR_BTN.disabled = true;
 
   // Reset elapsed time and progress bar
-  elapsedTimeDiv.textContent = 'Time (sec): 0';
-  simulationProgress.setAttribute('style', 'width: 0%;');
-  simulationProgress.ariaValueNow = '0';
+  ELAPSED_TIME_DIV.textContent = 'Time (sec): 0';
+  SIMULATION_PROGRESS.setAttribute('style', 'width: 0%;');
+  SIMULATION_PROGRESS.ariaValueNow = '0';
 
   // Reset count of frame and canvas
   count = 0;
@@ -204,7 +205,7 @@ function resetSimulator() {
 function setup() { // eslint-disable-line no-unused-vars
   // Create canvas and set the position to div#canvas-holer
   const simulationCanvas = createCanvas(canvasSize[0], canvasSize[1]);
-  simulationCanvas.parent(canvasHolderDivId);
+  simulationCanvas.parent(CANVAS_HOLDER_DIV_ID);
 
   resetSimulator(); // Reset Simulator
   frameRate(fps); // Set framerate of simulator
@@ -248,12 +249,12 @@ function draw() {
 
   // Show elapsed time
   const currentTime = progress * te;
-  elapsedTimeDiv.textContent = `Time (sec): ${currentTime.toFixed(3)}`;
+  ELAPSED_TIME_DIV.textContent = `Time (sec): ${currentTime.toFixed(3)}`;
 
   // Show elapsed percentage
   const progressPercentage = progress * 100;
-  simulationProgress.setAttribute('style', `width: ${progressPercentage}%;`);
-  simulationProgress.ariaValueNow = `${progressPercentage}`;
+  SIMULATION_PROGRESS.setAttribute('style', `width: ${progressPercentage}%;`);
+  SIMULATION_PROGRESS.ariaValueNow = `${progressPercentage}`;
 
   if (count === frameNum - 1) {
     // When the current frame is the last one, stop simulation
@@ -262,15 +263,15 @@ function draw() {
     // Print end datetime
     console.log('end:', new Date());
     // Show completed message
-    elapsedTimeDiv.textContent += ' Completed!';
+    ELAPSED_TIME_DIV.textContent += ' Completed!';
     // Stop progress bar
-    simulationProgress.setAttribute('style', `width: 100%;`);
-    simulationProgress.ariaValueNow = '100';
-    simulationProgress.classList.remove('progress-bar-striped');
-    simulationProgress.classList.remove('progress-bar-animated');
+    SIMULATION_PROGRESS.setAttribute('style', `width: 100%;`);
+    SIMULATION_PROGRESS.ariaValueNow = '100';
+    SIMULATION_PROGRESS.classList.remove('progress-bar-striped');
+    SIMULATION_PROGRESS.classList.remove('progress-bar-animated');
 
-    startSimulatorBtn.checked = false; // Uncheck start simulator button
-    resetSimulatorBtn.disabled = false; // Deactivate reset simulator button
+    START_SIMULATOR_BTN.checked = false; // Uncheck start simulator button
+    RESET_SIMULATOR_BTN.disabled = false; // Deactivate reset simulator button
   } else {
     // Add count of frame
     count += 1;
@@ -332,11 +333,11 @@ function drawManipulator(xy1, xy2) {
  */
 function getCanvasSize() {
   // Calculate canvas width
-  const canvasWidth = canvasHolderDiv.clientWidth;
+  const canvasWidth = CANVAS_HOLDER_DIV.clientWidth;
 
   // Calculate canvas Height
-  const canvasTop = canvasHolderDiv.getBoundingClientRect().top;
-  const footerDivHeight = footerDiv.offsetHeight;
+  const canvasTop = CANVAS_HOLDER_DIV.getBoundingClientRect().top;
+  const footerDivHeight = FOOTER_DIV.offsetHeight;
   const simulatorDivTop = canvasTop + window.pageYOffset;
   let canvasHeight = window.innerHeight - simulatorDivTop - footerDivHeight;
   // Reduce canvasHeight because canvas is slightly smaller
