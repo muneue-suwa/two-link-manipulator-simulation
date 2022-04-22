@@ -2,8 +2,6 @@
 
 Web Application of Two-Link Manipulator Simulation
 
-URL: <https://muneue-suwa.github.io/two-link-manipulator-simulation/>
-
 ## User's Manual for End Users
 
 [エンドユーザ向けの日本語のマニュアル](manual-for-end-users.md)
@@ -21,7 +19,7 @@ This application does **NOT** support Internet Explorer. The operation in macOS 
 
 ### Using GitHub Pages
 
-Access GitHub Pages link: <https://github.com/muneue-suwa/two-link-manipulator-simulation>
+Access GitHub Pages link: <https://muneue-suwa.github.io/two-link-manipulator-simulation/>
 
 ### Using Your HTTP Server
 
