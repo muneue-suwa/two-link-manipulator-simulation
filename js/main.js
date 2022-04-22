@@ -41,7 +41,6 @@ const BACKGROUND_COLOR = 240;
  * ----------------
  */
 let coordinates; // Instance of CoordinatesConverter()
-let startTime; // Record start time of simulation
 
 let xy1Array; // Manipulator coordinate: [[x1, y1], ...]
 let xy2Array; // Manipulator coordinate: [[x2, y2], ...]
@@ -105,8 +104,7 @@ startSimulatorBtn.addEventListener('click', () => {
   startSimulatorBtn.checked = true;
   startSimulatorBtn.disabled = true;
 
-  // Get start time of simulation
-  startTime = Date.now();
+  // Print start time of simulation
   console.log('start:', new Date()); // Print start datetime
   // Start animation of progress bar
   simulationProgress.classList.add('progress-bar-striped');
@@ -234,19 +232,24 @@ function draw() {
 
   // Draw manipulator
   drawManipulator(xy1Array[count], xy2Array[count]);
-  // Calculate and show elapsed time
-  const currentTime = (Date.now() - startTime) / 1000;
-  elapsedTimeDiv.textContent = `Time (sec): ${currentTime}`;
-  // Calculate and show elapsed percentage
-  const progress = count * 100 / (frameNum - 1);
-  simulationProgress.setAttribute('style', `width: ${progress}%;`);
-  simulationProgress.ariaValueNow = `${progress}`;
+
+  // Calculate elapsed ratio
+  const progress = count / (frameNum - 1);
+
+  // Show elapsed time
+  const currentTime = progress * te;
+  elapsedTimeDiv.textContent = `Time (sec): ${currentTime.toFixed(3)}`;
+
+  // Show elapsed percentage
+  const progressPercentage = progress * 100;
+  simulationProgress.setAttribute('style', `width: ${progressPercentage}%;`);
+  simulationProgress.ariaValueNow = `${progressPercentage}`;
 
   if (count === frameNum - 1) {
     // When the current frame is the last one, stop simulation
     doDraw = false;
     noLoop();
-    // Show end datetime
+    // Print end datetime
     console.log('end:', new Date());
     // Show completed message
     elapsedTimeDiv.textContent += ' Completed!';
