@@ -57,7 +57,7 @@ class Manipulator { // eslint-disable-line no-unused-vars
   calcPixelRatio(canvasSize) {
     const maxArmLength = (this.l1 + this.l2) * 2;
     const minWidthOrHeight = Math.min(canvasSize[0], canvasSize[1]);
-    const pixelRatio = minWidthOrHeight / (maxArmLength * 2) / 1.05;
+    const pixelRatio = minWidthOrHeight / (maxArmLength * 2);
     return pixelRatio;
   }
 
