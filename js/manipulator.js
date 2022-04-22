@@ -49,6 +49,17 @@ class Manipulator { // eslint-disable-line no-unused-vars
   }
 
   /**
+   * Detect that torque array has enough length
+   *
+   * @param {Array} torqueArray Torque array
+   * @return {bool} Is enough torque array length
+   */
+  isEnoughTorqueArray(torqueArray) {
+    const nt = this.te / this.dt + 1;
+    return nt <= torqueArray.length;
+  }
+
+  /**
    * Calculate canvas pixel ratio from canvas size
    *
    * @param {Array} canvasSize

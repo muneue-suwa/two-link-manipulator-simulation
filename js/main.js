@@ -23,7 +23,9 @@ const footerDiv = document.getElementById('footer');
  * ------------------
  */
 // Instance of Manipulator()
-const manipulator = new Manipulator(te=8, dt=1/100, th1=Math.PI, th2=Math.PI);
+const te = 8;
+const dt = 1/100;
+const manipulator = new Manipulator(te, dt, th1=Math.PI, th2=Math.PI);
 // Target coordinate and allowable error
 const targetXY = [1.2, -0.8];
 const allowableError = 0.03;
@@ -87,8 +89,16 @@ torqueFileInput.addEventListener('change', (e) => {
       // Add the converted torque array to torqueArray
       torqueArray.push(torque);
     }
-    // Enable start simulation button
-    startSimulatorBtn.disabled = false;
+    // If torque file has enough torque values, enable start simulation button
+    if (manipulator.isEnoughTorqueArray(torqueArray)) {
+      startSimulatorBtn.disabled = false;
+      elapsedTimeDiv.textContent = 'Time (sec): 0';
+      elapsedTimeDiv.style.color = '';
+    } else {
+      startSimulatorBtn.disabled = true;
+      elapsedTimeDiv.textContent = 'Has not enough torque values';
+      elapsedTimeDiv.style.color = 'red';
+    }
   });
 });
 
