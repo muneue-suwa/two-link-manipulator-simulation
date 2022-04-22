@@ -31,8 +31,20 @@ const targetXY = [1.2, -0.8];
 const allowableError = 0.03;
 // FPS of simulator
 const fps = 60;
+
+// Color settings: [R, G, B], 0 <= R,G,B <= 255
 // Background color of simulator canvas
-const BACKGROUND_COLOR = 240;
+const BACKGROUND_COLOR = [240, 240, 240];
+// Arms color
+const ARM_ONE_COLOR = [50, 50, 200];
+const ARM_TWO_COLOR = [50, 200, 50];
+// Target circle and axes color
+const TARGET_COLOR = [200, 50, 50];
+const AXES_COLOR = [0, 0, 0];
+// Line Weight
+const TARGET_LINE_WEIGHT = 1;
+const AXES_LINE_WEIGHT = 1;
+const ARM_LINE_WEIGHT = 5;
 /**
  * ------------------
  */
@@ -195,7 +207,7 @@ function resetSimulator() {
 
   // Reset count of frame and canvas
   count = 0;
-  background(BACKGROUND_COLOR);
+  background(BACKGROUND_COLOR[0], BACKGROUND_COLOR[1], BACKGROUND_COLOR[2]);
   redraw();
 }
 
@@ -221,7 +233,7 @@ function setup() { // eslint-disable-line no-unused-vars
  */
 function draw() {
   // Fill canvas with BACKGROUND_COLOR
-  background(BACKGROUND_COLOR);
+  background(BACKGROUND_COLOR[0], BACKGROUND_COLOR[1], BACKGROUND_COLOR[2]);
 
   if (doShowTarget > 0) {
     // Draw target position
@@ -292,7 +304,7 @@ function windowResized() { // eslint-disable-line no-unused-vars
     );
 
     // Redraw canvas
-    background(BACKGROUND_COLOR);
+    background(BACKGROUND_COLOR[0], BACKGROUND_COLOR[1], BACKGROUND_COLOR[2]);
     redraw();
   }
 }
@@ -301,8 +313,8 @@ function windowResized() { // eslint-disable-line no-unused-vars
  * Draw target coordinate
  */
 function drawTarget() {
-  strokeWeight(1);
-  stroke(200, 50, 50);
+  strokeWeight(TARGET_LINE_WEIGHT);
+  stroke(TARGET_COLOR[0], TARGET_COLOR[1], TARGET_COLOR[2]);
   coordinates.circle(targetXY[0], targetXY[1], allowableError * 2);
 }
 
@@ -314,15 +326,15 @@ function drawTarget() {
  */
 function drawManipulator(xy1, xy2) {
   // Draw axes
-  strokeWeight(1);
-  stroke(0, 0, 0);
+  strokeWeight(AXES_LINE_WEIGHT);
+  stroke(AXES_COLOR[0], AXES_COLOR[1], AXES_COLOR[2]);
   coordinates.drawAxes();
 
   // Draw manipulator
-  strokeWeight(5);
-  stroke(50, 50, 200);
+  strokeWeight(ARM_LINE_WEIGHT);
+  stroke(ARM_ONE_COLOR[0], ARM_ONE_COLOR[1], ARM_ONE_COLOR[2]);
   coordinates.line(0, 0, xy1[0], xy1[1]);
-  stroke(50, 200, 50);
+  stroke(ARM_TWO_COLOR[0], ARM_TWO_COLOR[1], ARM_TWO_COLOR[2]);
   coordinates.line(xy1[0], xy1[1], xy2[0], xy2[1]);
 }
 
