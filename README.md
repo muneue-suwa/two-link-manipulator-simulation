@@ -10,10 +10,24 @@ URL: <https://muneue-suwa.github.io/two-link-manipulator-simulation/>
 
 ## Environment
 
+The operation is confirmed in the following environment.
+
 - OS: Windows 10, Windows 11
 - Web Browser: Google Chrome, Microsoft Edge
 
-This application does **NOT** support Internet Explorer.
+This application does **NOT** support Internet Explorer. The operation in macOS is confirmed, because I do not have Mac computers.
+
+## Usage
+
+### Using GitHub Pages
+
+Access GitHub Pages link: <https://github.com/muneue-suwa/two-link-manipulator-simulation>
+
+### Using Your HTTP Server
+
+1. Download the released zip file (e.g. release_v.x.x.x; x.x.x is version information) from [releases page](https://github.com/muneue-suwa/two-link-manipulator-simulation/releases).
+2. Unzip and upload the file to your server.
+
 ## Simulator Settings
 
 Edit *SIMULATION SETTINGS* in [js/main.js](js/main.js).
