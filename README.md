@@ -13,7 +13,7 @@ The operation is confirmed in the following environment.
 - OS: Windows 10, Windows 11
 - Web Browser: Google Chrome, Microsoft Edge
 
-This application does **NOT** support Internet Explorer. The operation in macOS is confirmed, because I do not have Mac computers.
+This application does **NOT** support Internet Explorer. The operation in macOS is **NOT** confirmed, because I do not have any Mac computers.
 
 ## Usage
 
